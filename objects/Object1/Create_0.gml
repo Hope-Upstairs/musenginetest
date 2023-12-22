@@ -1,7 +1,13 @@
-grid = load_csv("cavestory.csv")
+while(true){
+	var csv = ""
+	csv = "C:\\Users\\razva\\Documents\\GameMakerStudio2\\musenginetest\\datafiles\\"+get_string("enter the file to load:","marin")+".csv"
+	if file_exists(csv){
+		grid = load_csv(csv)
+		break
+	}
+}
 
 gl_pitch = 0
-gtime = 0
 
 pause = false
 
@@ -11,18 +17,17 @@ channels = grid[# 1, 1]
 
 instruments = [[Sound1,2],[Sound2,4],[Sound1,14]]
 
-game_set_speed(int64(grid[# 2, 1]),gamespeed_fps)
+game_set_speed(int64(grid[# 3, 1]),gamespeed_fps)
 
 for (var i = 0; i<channels; i++) {
 	var ii = 5+grid[# 0, 1]+(2*i)
 	song[i] = array_create(0,0)
 	for (var cur_pos = 0; cur_pos<grid[# ii, 1]; cur_pos++) {
 		array_insert(song[i],array_length(song[i]),[
-		int64(grid[# (5*i), 3+cur_pos]),
-		int64(grid[# (5*i)+1, 3+cur_pos]),
-		int64(grid[# (5*i)+2, 3+cur_pos]),
-		int64(grid[# (5*i)+3, 3+cur_pos]),
-		int64(grid[# (5*i)+4, 3+cur_pos])
+		int64(grid[# (4*i), 3+cur_pos]),
+		int64(grid[# (4*i)+1, 3+cur_pos]),
+		int64(grid[# (4*i)+2, 3+cur_pos]),
+		int64(grid[# (4*i)+3, 3+cur_pos])
 		])
 	}
 }
