@@ -1,0 +1,1 @@
+C:\Users\razva\Desktop\files\ffmpeg.exe -i %1 -f s16le -acodec pcm_s16le "%~n1.raw"

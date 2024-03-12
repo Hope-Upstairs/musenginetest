@@ -57,6 +57,15 @@
   ],
   "IncludedFiles": [
     {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"cavestory.csv","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"wav to raw.bat","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles/cavestory","resourceVersion":"1.0","name":"Sound1.raw","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles/cavestory","resourceVersion":"1.0","name":"Sound2.raw","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles/marin","resourceVersion":"1.0","name":"Sound1.raw","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles/marin","resourceVersion":"1.0","name":"Sound2.raw","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"tmnt brass.wav","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles/marin","resourceVersion":"1.0","name":"tmnt brass.raw","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"earthworm bass.wav","resourceType":"GMIncludedFile",},
+    {"CopyToMask":-1,"filePath":"datafiles/marin","resourceVersion":"1.0","name":"earthworm bass.raw","resourceType":"GMIncludedFile",},
     {"CopyToMask":-1,"filePath":"datafiles","resourceVersion":"1.0","name":"marin.csv","resourceType":"GMIncludedFile",},
   ],
   "MetaData": {
