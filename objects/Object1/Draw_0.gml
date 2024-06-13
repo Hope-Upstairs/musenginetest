@@ -5,12 +5,14 @@ draw_text(0,0,"global pitch: "+string(gl_pitch))
 draw_text(0,18,"channels: "+string(channels))
 draw_text(0,36,"speed: "+string(m_speed))
 
+var w_hei = window_get_height()/2
+
 if (draw_mode == 1){
 
 	draw_set_halign(fa_center)
 	
-	for (var i = 0; i<14; i++){draw_line(188+32*i,0,188+32*i,360)}
-	for (var i = 0; i<=channels; i++){draw_line(0,60+20*i,640,60+20*i)}
+	for (var i = 0; i<((old_width-188)/32); i++){draw_line(188+32*i,0,188+32*i,old_height)}
+	for (var i = 0; i<=channels; i++){draw_line(0,60+20*i,old_width,60+20*i)}
 	for (var i = 1; i<=3; i++){draw_line(47*i,60,47*i,60+(channels)*20)}
 	
 	for (var chan = 0; chan < channels; chan++) {
@@ -51,7 +53,7 @@ if (draw_mode == 1){
 					
 				}else{
 				
-					if (32*(note-noteind[chan]+3))>640 break
+					if (32*(note-noteind[chan]+3))>old_width break
 					
 					draw_set_color(c_white)
 					
@@ -83,7 +85,7 @@ if (draw_mode == 1){
 }
 else if draw_mode==2{
 
-	for (var chan = 0; chan < channels; chan++) {
+	for (var chan = 0; chan < channels-percs; chan++) {
 	
 		if timer[chan]<=0 continue
 		
@@ -136,8 +138,8 @@ else if draw_mode==2{
 				
 			}
 			//var extratime = 0
-			if active[chan] draw_triangle(curr_xpos-back_xpos,180-(note_height/2)-note*note_height,curr_xpos-back_xpos,180+(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),180-note*note_height,false)
-			draw_rectangle(curr_xpos-back_xpos,180-(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),180+(note_height/2)-note*note_height,true)
+			if active[chan] draw_triangle(curr_xpos-back_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos-back_xpos,w_hei+(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),w_hei-note*note_height,false)
+			draw_rectangle(curr_xpos-back_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),w_hei+(note_height/2)-note*note_height,true)
 		}
 		
 		curr_xpos+=note_width*timer[chan]
@@ -165,14 +167,14 @@ else if draw_mode==2{
 					
 				}
 				
-				if active[chan] draw_triangle(curr_xpos,180-(note_height/2)-note*note_height,curr_xpos,180+(note_height/2)-note*note_height,curr_xpos+note_width*(curTimer+extratime),180-note*note_height,false)
+				if active[chan] draw_triangle(curr_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos,w_hei+(note_height/2)-note*note_height,curr_xpos+note_width*(curTimer+extratime),w_hei-note*note_height,false)
 				
-				draw_rectangle(curr_xpos,180-(note_height/2)-note*note_height,curr_xpos+note_width*(curTimer+extratime),180+(note_height/2)-note*note_height,true)
+				draw_rectangle(curr_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos+note_width*(curTimer+extratime),w_hei+(note_height/2)-note*note_height,true)
 			
 			}
 			
 			curr_xpos+=note_width*curTimer
-			if curr_xpos>=640 break
+			if curr_xpos>=old_width break
 			
 		}
 		

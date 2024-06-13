@@ -1,7 +1,7 @@
 while(true){	//load the file, no need to ask for this in KLVA so once implemented there, turn it into a function taking a string as the argument
 	
-	var instr_location = ""
-	//var instr_location = "C:\\Users\\razva\\Documents\\GameMakerStudio2\\musenginetest\\datafiles\\"
+	//var instr_location = ""
+	var instr_location = "C:\\Users\\razva\\Documents\\GameMakerStudio2\\musenginetest\\datafiles\\"
 	var song_location = get_string("enter the file to load:","test2")
 	var csv = instr_location+song_location+".csv"
 	
@@ -11,7 +11,12 @@ while(true){	//load the file, no need to ask for this in KLVA so once implemente
 		break
 	}
 	
-	if file_exists(csv){
+	if file_exists(instr_location+csv){
+		show_debug_message("Loaded "+instr_location+csv+"!")
+		grid = load_csv(instr_location+csv)
+		break
+	}else if file_exists(csv){
+		show_debug_message("Loaded "+csv+"!")
 		grid = load_csv(csv)
 		break
 	}
@@ -19,6 +24,11 @@ while(true){	//load the file, no need to ask for this in KLVA so once implemente
 }
 
 #region declare vars
+
+	old_width = 0
+	old_height = 0
+
+	percs = int64(grid[# 2, 1])
 	
 	draw_mode = 1
 	draw_hei = 0

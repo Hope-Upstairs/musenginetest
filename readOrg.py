@@ -8,57 +8,59 @@ org = []
 
 drums = {
 
-      "0": "Bass01",
-      "1": "Bass02",
-      "2": "Snare01",
-      "3": "Snare02",
-      "4": "Tom01",
-      "5": "HiClose",
-      "6": "HiOpen",
-      "7": "Crash",
-      "8": "Per01",
-      "9": "Per02",
+      "0":  "Bass01",
+      "1":  "Bass02",
       "10": "Bass03",
-      "11": "Tom02",
       "12": "Bass04",
       "13": "Bass05",
-      "14": "Snare03",
-      "15": "Snare04",
-      "16": "HiClose02",
-      "17": "HiOpen02",
-      "18": "HiClose03",
-      "19": "HiOpen03",
-      "20": "Crash02",
-      "21": "RevSym01",
-      "22": "Ride01",
-      "23": "Tom03",
-      "24": "Tom04",
-      "25": "OrcDrm01",
-      "26": "Bell",
-      "27": "Cat",
       "28": "Bass06",
       "29": "Bass07",
+      "39": "Bass08",
+      "26": "Bell",
+      "27": "Cat",
+      "36": "Clap01",
+      "7":  "Crash",
+      "20": "Crash02",
+      "5":  "HiClose",
+      "16": "HiClose02",
+      "18": "HiClose03",
+      "35": "HiClose04",
+      "41": "HiClose05",
+      "6":  "HiOpen",
+      "17": "HiOpen02",
+      "19": "HiOpen03",
+      "34": "HiOpen04",
+      "25": "OrcDrm01",
+      "8":  "Per01",
+      "9":  "Per02",
+      "37": "Pesi01",
+      "38": "Quick01",
+      "21": "RevSym01",
+      "22": "Ride01",
+      "2":  "Snare01",
+      "3":  "Snare02",
+      "14": "Snare03",
+      "15": "Snare04",
       "30": "Snare05",
       "31": "Snare06",
       "32": "Snare07",
-      "33": "Tom05",
-      "34": "HiOpen04",
-      "35": "HiClose04",
-      "36": "Clap01",
-      "37": "Pesi01",
-      "38": "Quick01",
-      "39": "Bass08",
       "40": "Snare08",
-      "41": "HiClose05"
+      "4":  "Tom01",
+      "11": "Tom02",
+      "23": "Tom03",
+      "24": "Tom04",
+      "33": "Tom05",
 
 }
 
 while True:
-      try: 
-            file = open(input("\nPaste an .org file's address and press Enter or press CTRL+C to exit:\n"),"rb")
-            break
-      except:
-            print("\nError!")
+      #try: 
+      file = open(input("\nPaste an .org file's address and press Enter or press CTRL+C to exit:\n").replace('"',""),"rb")
+      break
+      #except:
+            #print("\nError!")
+
+#file = open("C:\\Users\\razva\\Desktop\\files\\games\\NXEngine\\data\\org\\ironh.org","rb")
 
 #file = open("c:\\users\\razva\\desktop\\drums1.org", "rb")
 #file = open("gravity.txt", "rb")
@@ -96,9 +98,10 @@ for i in range(16): #Instruments
       })
       offset+=6
 
-print()
-for i in instruments[8:]:
-      print(i["instrument"])
+#print()
+#for i in instruments[8:]:
+#      print(drums[str(i["instrument"])])
+#      print(i["pi"])
 
 #endregion
 
@@ -134,10 +137,7 @@ for n in range(len(instruments)):   #for each channel:
                         notes[n][i][2] = notes[n][i+1][0] - notes[n][i][0]
                   #go to next note
                   i+=1
-      
-for i in notes[1]:
-      print(i)
-            
+       
 
 # Position (4 bytes)
 # Height (0-95)
@@ -172,6 +172,7 @@ for i in range(16): #channel settings
 for i in range(16):
       if i>=8:
             ins = drums[str(instruments[i]["instrument"])]
+            print(drums[str(instruments[i]["instrument"])])
       else:
             ins = str(instruments[i]["instrument"])
       towrite[1]+=ins+",2,org,10," #instr settings (will set the chans at the end, don't have the required info rn)
@@ -219,6 +220,12 @@ for i in range(16):
 
 #region leave this at the end:
 
+ch_lengths = []
+while not not not not not False:
+#for i in range(len(channels)):
+      pass
+      break
+
 #go back to towrite[1] and add the ends and return positions to each channel at the end
 #setting it to 0 for debug DISABLE WHEN INITIALISING!!!
 nof_rows = len(towrite)-2
@@ -245,11 +252,10 @@ if True: #export the file
       fname = "C:\\Users\\razva\\Documents\\GameMakerStudio2\\musenginetest\\datafiles\\test2.csv"
       file = open(fname,"w")
       for i in towrite:
-            #print(i)
             file.write(i+"\n")
             pass
       file.close()
-      system("C:\\ProgramData\\GameMakerStudio2\\Cache\\runtimes\\runtime-2022.1.0.482\\windows\\x64\\Runner.exe -game C:\\Users\\razva\\AppData\\Local\\GameMakerStudio2\\GMS2TEMP\\musenginetest_6BC9C679_VM\\musenginetest.win")
+
 elif False: #print out a channel's data
       print("\n")
       for i in notes[1]:
