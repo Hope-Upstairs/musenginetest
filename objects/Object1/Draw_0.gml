@@ -7,7 +7,7 @@ draw_text(0,36,"speed: "+string(m_speed))
 
 var w_hei = window_get_height()/2
 
-if (draw_mode == 1){
+if (draw_mode%2){
 
 	draw_set_halign(fa_center)
 	
@@ -29,7 +29,7 @@ if (draw_mode == 1){
 			draw_text(20+0, 20*(chan+3), timer[chan])
 			draw_text(20+48, 20*(chan+3), noteind[chan]+3)
 			
-			if active[chan]{
+			if active[chan] and (noteind[chan] >= 0){
 			
 				draw_set_color(c_lime)
 				
@@ -50,12 +50,14 @@ if (draw_mode == 1){
 					draw_set_color(c_yellow)
 					draw_text(12+32*(note-noteind[chan]+5),20*(chan+3),"<=")
 					draw_set_color(c_white)
+					if chan >= percs draw_set_color(c_aqua)
 					
 				}else{
 				
 					if (32*(note-noteind[chan]+3))>old_width break
 					
 					draw_set_color(c_white)
+					if chan >= percs draw_set_color(c_aqua)
 					
 					if (note == loopStart[chan]-3) { draw_set_color(c_yellow) }
 					
@@ -83,7 +85,7 @@ if (draw_mode == 1){
 	}
 	
 }
-else if draw_mode==2{
+if (draw_mode >= 2) {
 
 	for (var chan = 0; chan < channels-percs; chan++) {
 	
@@ -102,44 +104,48 @@ else if draw_mode==2{
 		}
 		
 		var curr_xpos = 0
-		var note = song[chan][noteind[chan]][0]
 		var extratime = 0
-		
 		var back_xpos = 0
 		var shouldDraw = true
 		
-		if (song[chan][noteind[chan]][2] == -1){
+		if (noteind[chan] >= 0) {
 		
-			shouldDraw = false
+			var note = song[chan][noteind[chan]][0]
 			
-		}else{
-		
-			var i = noteind[chan]
+			if (song[chan][noteind[chan]][2] == -1){
 			
-			while true{
+				shouldDraw = false
 				
-				break
-			}
+			}else{
 			
-			var note = song[chan][i][0] - draw_hei
-			
-		}
-		
-		if (shouldDraw) {
-		
-			var i = noteind[chan]
-			while true{
-				i++
-				if (i>=loopEnd[chan]) break
-				if (song[chan][i][2] == -2){
-					extratime += song[chan][i][1]
+				var i = noteind[chan]
+				
+				while true{
 					
-				} else break
+					break
+				}
+				
+				var note = song[chan][i][0] - draw_hei
 				
 			}
-			//var extratime = 0
-			if active[chan] draw_triangle(curr_xpos-back_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos-back_xpos,w_hei+(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),w_hei-note*note_height,false)
-			draw_rectangle(curr_xpos-back_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),w_hei+(note_height/2)-note*note_height,true)
+		
+			if (shouldDraw) {
+			
+				var i = noteind[chan]
+				while true{
+					i++
+					if (i>=loopEnd[chan]) break
+					if (song[chan][i][2] == -2){
+						extratime += song[chan][i][1]
+						
+					} else break
+					
+				}
+				//var extratime = 0
+				if active[chan] draw_triangle(curr_xpos-back_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos-back_xpos,w_hei+(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),w_hei-note*note_height,false)
+				draw_rectangle(curr_xpos-back_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos-back_xpos+note_width*(timer[chan]+extratime),w_hei+(note_height/2)-note*note_height,true)
+			}
+		
 		}
 		
 		curr_xpos+=note_width*timer[chan]
@@ -167,9 +173,15 @@ else if draw_mode==2{
 					
 				}
 				
-				if active[chan] draw_triangle(curr_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos,w_hei+(note_height/2)-note*note_height,curr_xpos+note_width*(curTimer+extratime),w_hei-note*note_height,false)
+				curr_xpos *= 1+chan/100
 				
-				draw_rectangle(curr_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos+note_width*(curTimer+extratime),w_hei+(note_height/2)-note*note_height,true)
+				var i = (curr_xpos+note_width*(curTimer+extratime))
+				
+				i *= (1+chan/100)
+				
+				if active[chan] draw_triangle(curr_xpos,w_hei-(note_height/2)-note*note_height,curr_xpos,w_hei+(note_height/2)-note*note_height,i,w_hei-note*note_height,false)
+				
+				draw_rectangle(curr_xpos,w_hei-(note_height/2)-note*note_height,i,w_hei+(note_height/2)-note*note_height,true)
 			
 			}
 			

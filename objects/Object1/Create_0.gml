@@ -41,6 +41,8 @@ while(true){	//load the file, no need to ask for this in KLVA so once implemente
 	pause = false
 	
 	channels = int64(grid[# 1, 1])
+	
+	start_offset = 30
 
 #endregion
 
@@ -116,7 +118,7 @@ for (var chan = 0; chan<channels; chan++) { //get channel variables and start pl
 	#region start playback
 	
 		noteind[chan] = -1
-		timer[chan] = 1
+		timer[chan] = 1+start_offset
 		currSound[chan] = noone
 		loopStart[chan] = int64(grid[# 4+(4*int64(grid[# 0, 1]))+(2*chan), 1])
 		loopEnd[chan] = int64(grid[# 5+(4*int64(grid[# 0, 1]))+(2*chan), 1])

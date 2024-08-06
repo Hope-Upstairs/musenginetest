@@ -54,17 +54,15 @@ drums = {
 }
 
 while True:
-      #try: 
-      file = open(input("\nPaste an .org file's address and press Enter or press CTRL+C to exit:\n").replace('"',""),"rb")
-      break
-      #except:
-            #print("\nError!")
+      try: 
+            file = open(input("\nPaste an .org file's address and press Enter or press CTRL+C to exit:\n").replace('"',""),"rb")
+            break
+      except:
+            print("\nError!")
 
 #file = open("C:\\Users\\razva\\Desktop\\files\\games\\NXEngine\\data\\org\\ironh.org","rb")
-
-#file = open("c:\\users\\razva\\desktop\\drums1.org", "rb")
-#file = open("gravity.txt", "rb")
-#file = open("c:\\users\\razva\\desktop\\onetest.org","rb")
+#file = open("C:\\Users\\razva\\Desktop\\files\\games\\NXEngine\\data\\org\\gravity.org","rb")
+#file = open("C:\\Users\\razva\\Desktop\\files\\games\\NXEngine\\data\\org\\maze.org","rb")
 
 for i in list(bytearray(file.read())):
       org.append(i)
@@ -131,13 +129,19 @@ for n in range(len(instruments)):   #for each channel:
             while (i+1)<len(notes[n]):
                   #if next one is 255:
                   if notes[n][i+1][1] == 255:
-                        #next's length = (pos + length) - next's pos
-                        notes[n][i+1][2] = (notes[n][i][0] + notes[n][i][2]) - notes[n][i+1][0]
-                        #length = next's pos - pos
-                        notes[n][i][2] = notes[n][i+1][0] - notes[n][i][0]
+                        if notes[n][i+1][0] < notes[n][i][0]+notes[n][i][2]:
+                              #next's length = (pos + length) - next's pos
+                              notes[n][i+1][2] = ((notes[n][i][0] + notes[n][i][2]) - notes[n][i+1][0])
+                              if notes[n][i+1][2] <= 0:
+                                    print("WHY IS THIS ZERO")
+                              #length = next's pos - pos
+                              notes[n][i][2] = (notes[n][i+1][0] - notes[n][i][0])
+                              if notes[n][i][2] <= 0:
+                                    print("WHY IS THIS ZERO")
+                        else:
+                              print("modifier outside note event")
                   #go to next note
                   i+=1
-       
 
 # Position (4 bytes)
 # Height (0-95)
@@ -151,19 +155,15 @@ for n in range(len(instruments)):   #for each channel:
 
 #region Exporting it
 
-#region first row, just headers. not needed but helpful.
+#region first row, just headers. not needed but helpful if ya wanna look at it or modify it by hand.
 
 towrite = ["instruments,channels,percussions,speed,","16,16,8,"+str(int(round(header["tempo"]/16)))+",",""]
 
-for i in range(16): #instrument settings
-      if i>=8:
-            i = "QWERTYUI"[i-8]
-      towrite[0]+="ins "+str(i)+" name,ins "+str(i)+" offset,ins "+str(i)+" bitrate,ins "+str(i)+" volume,"
+for i in "12345678QWERTYUI": #instrument settings
+      towrite[0]+="ins "+i+" name,ins "+i+" offset,ins "+i+" bitrate,ins "+i+" volume,"
 
-for i in range(16): #channel settings
-      if i>=8:
-            i = "QWERTYUI"[i-8]
-      towrite[0]+="ch "+str(i)+" return,ch "+str(i)+" length,"
+for i in "12345678QWERTYUI": #channel settings
+      towrite[0]+="ch "+i+" return,ch "+i+" length,"
 
 #endregion
 
@@ -172,7 +172,6 @@ for i in range(16): #channel settings
 for i in range(16):
       if i>=8:
             ins = drums[str(instruments[i]["instrument"])]
-            print(drums[str(instruments[i]["instrument"])])
       else:
             ins = str(instruments[i]["instrument"])
       towrite[1]+=ins+",2,org,10," #instr settings (will set the chans at the end, don't have the required info rn)
@@ -185,23 +184,23 @@ nof_rows = 0
 
 channels=[]
 
-for i in range(16):
+for i in range(16): #for each channel
 
-      if i<8:
+      if i<8: #honey i fucked up the bitrate
             offset = 50
       else:
             offset = 24
 
       channels.append([])
       if instruments[i]["n of notes"] == 0:
-            channels[i].append("0,0,-1,0,")
+            channels[i].append([0,0,-1,0])
             continue
       
       if notes[i][0][0] != 0: #if first note starts later, start with a pause
-            channels[i].append("0,"+str(notes[i][0][0])+",-1,0,")
+            channels[i].append([0,notes[i][0][0],-1,0])
 
       
-      channels[i].append(str(notes[i][0][1]-offset)+","+str(notes[i][0][2])+","+str(i)+","+str(int(notes[i][0][3]/20))+",")
+      channels[i].append([notes[i][0][1]-offset,notes[i][0][2],i,int(notes[i][0][3]/20)])
       
       #then here set the notes
       for ii in range(1,len(notes[i])):
@@ -211,58 +210,119 @@ for i in range(16):
             #note, length, instrument, volume
 
             if notes[i][ii][0] > (notes[i][ii-1][0]+notes[i][ii-1][2]): #if break between notes
-                        channels[i].append("0,"+str(notes[i][ii][0]-(notes[i][ii-1][0]+notes[i][ii-1][2]))+",-1,0,")
+                  channels[i].append([0,notes[i][ii][0]-(notes[i][ii-1][0]+notes[i][ii-1][2]),-1,0])
             
             if notes[i][ii][1] != 255:
-                  channels[i].append(str(notes[i][ii][1]-offset)+","+str(notes[i][ii][2])+","+str(i)+","+str(int(notes[i][ii][3]/20))+",")
+                  channels[i].append([notes[i][ii][1]-offset,notes[i][ii][2],i,int(notes[i][ii][3]/20)])
             else:
-                  channels[i].append("0,"+str(notes[i][ii][2])+",-2,"+str(int(notes[i][ii][3]/20))+",")
+                  channels[i].append([0,notes[i][ii][2],-2,int(notes[i][ii][3]/20)])
 
-#region leave this at the end:
+#error detection (weirdly generated .org file? should overlapping events even be possible?)
+for i in range(len(channels)):
+      for ii in range(len(channels[i])):
+            if ii != 0:
+                  if channels[i][ii][1] == 0:
+                        print("Warning! Event {} (line {}) of channel {} (row {}) has a length of 0. Channel will get stuck! How did this happen?".format(ii,ii+4,i,67+i*4))
+                  elif channels[i][ii][1] < 0:
+                        print("Warning! Event {} (line {}) of channel {} (row {}) has a negative length. Channel will get stuck! How did this happen?".format(ii,ii+4,i,67+i*4))
 
-ch_lengths = []
-while not not not not not False:
-#for i in range(len(channels)):
+#
+#
+#
+#region     ADD THE LENGTH CODE HERE
+
+ch_bounds = []
+
+while False:
       pass
-      break
+
+
+for i in range(len(channels)):
+
+      should_pad = 0
+      ch_bounds.append([3,3])
+
+      #skip empty channels
+      if channels[i][0][1] == 0:
+            continue
+
+      pos = 0
+
+      for ii in range(len(channels[i])): #get start
+            if pos >= header["loop beginning"]: #if reached the start bound
+                  if pos > header["loop beginning"]: #if passed the start bound
+                        should_pad += pos-header["loop beginning"]
+                  break
+
+            pos += channels[i][ii][1] #add the length of the current note
+
+      ch_bounds[-1][0] = 3+ii
+
+
+      for ii in range(len(channels[i])): #get end
+            pos += channels[i][ii][1] #add the length of the current note
+
+            #rewrite for different cases, not tested yet lmfao
+            #scenarios:
+            # note stops before end = > add a pause
+            # there are notes after end = > get rid of them or something
+
+            # note stops at the end = > do nothing
+            if pos >= header["loop end"]:
+                  # note stops after end = > crop it
+                  if pos > header["loop end"]:
+                        channels[i][ii][1] -= pos-header["loop end"]
+                  break
+
+      ch_bounds[-1][1] = 3+ii
+
+      if should_pad:
+            channels[i].append([0,should_pad,-1,0]) #add a break at the end so it returns right
+
+      ch_bounds[-1][1] = 3+len(channels[i])
+
+#ch_bounds values should be offset by 3
+
+#endregion
+#
+#
 
 #go back to towrite[1] and add the ends and return positions to each channel at the end
 #setting it to 0 for debug DISABLE WHEN INITIALISING!!!
 nof_rows = len(towrite)-2
-for i in channels: #count how many rows there are now
-      nof_rows = max(nof_rows,len(i))
-      towrite[1]+="3,"+str(len(i))+","
+for i in range(len(channels)): #count how many rows there are now
+      nof_rows = max(nof_rows,len(channels[i]))
+
+      ch_bounds[i][0] = 3
+      ch_bounds[i][1] = len(channels[i])
+      towrite[1]+="{},{},".format(ch_bounds[i][0],ch_bounds[i][1])
 
 for i in range(16): #fill in blank spaces
       while len(channels[i])<nof_rows:
-            channels[i].append(",,,,")
+            channels[i].append(",,,")
 
 #write the output:
 for i in range(nof_rows): #for each note,
       out = ""
 
       for ii in range(16): #for each channel,
-            out += channels[ii][i]
-            pass
+            out += str(channels[ii][i]).replace("[","").replace("]","")+","
 
       towrite.append(out)
-      pass
 
 if True: #export the file
       fname = "C:\\Users\\razva\\Documents\\GameMakerStudio2\\musenginetest\\datafiles\\test2.csv"
+      #fname = "org.csv"
       file = open(fname,"w")
       for i in towrite:
             file.write(i+"\n")
-            pass
       file.close()
+      #system(fname)
 
 elif False: #print out a channel's data
       print("\n")
       for i in notes[1]:
             print(i)
-            pass
       print("\n")
-
-#endregion
 
 #endregion
